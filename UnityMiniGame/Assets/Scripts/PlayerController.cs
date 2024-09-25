@@ -67,7 +67,6 @@ public class PlayerController : MonoBehaviour
     {
         InputKey();
         Debug.Log($"현재 상태 : {curState}"); 
-
         playerStates[(int)curState].Update();
     }
 
@@ -149,33 +148,30 @@ public class PlayerController : MonoBehaviour
             {
                 curMoveState = MoveState.Run;
             }
+            
 
-            if(player.rb.velocity.x < 0)
+            if(player.x < 0)
             {
                 //헤어, 바디 FlipX = True;
                 player.bodyRender.flipX = true;
                 player.hairRender.flipX = true;
             }
-            else if (player.rb.velocity.x > 0)
+            else if (player.x > 0)
             {
                 player.bodyRender.flipX = false;
                 player.hairRender.flipX = false;
             }
-            else
+             
+            if(player.x == 0 && player.y == 0)
             {
                 player.curState = State.Idle;
             }
 
-            xMove = player.x;
-            yMove = player.y;
 
-            normal = new Vector2(xMove, yMove);
+        }
 
-            if (normal.sqrMagnitude > 1)
-            {
-                normal.Normalize();
-            }
-
+        public override void FixedUpdate()
+        {
             switch (curMoveState)
             {
                 case MoveState.Walk:
@@ -188,29 +184,44 @@ public class PlayerController : MonoBehaviour
                     Run();
                     break;
             }
-
-
-
         }
-
-        public override void FixedUpdate()
-        {
-
-        }
-
-
+         
         private void Walk()
-        { 
+        {
             //걷고 있을 때 에너지 소모
 
-            player.rb.velocity = normal * player.walkSpeed;
+            xMove = player.x;
+            yMove = player.y;
+
+            normal = new Vector2(xMove, yMove);
+
+            if (normal.sqrMagnitude > 1)
+            {
+                normal.Normalize();
+            }
+
+            player.rb.MovePosition(player.rb.position + normal * player.walkSpeed * Time.fixedDeltaTime);
+
+            //velocity 이동 Rigidbody.MovePosition으로 수정 필요
+            //player.rb.velocity = normal * player.walkSpeed;
         }
 
         private void Run()
         {
             //뛰는 상태일 때 에너지 빠르게 소모
 
-            player.rb.velocity = normal * player.runSpeed; 
+            xMove = player.x;
+            yMove = player.y;
+
+            normal = new Vector2(xMove, yMove);
+
+            if (normal.sqrMagnitude > 1)
+            {
+                normal.Normalize();
+            }
+
+            player.rb.MovePosition(player.rb.position+normal * player.runSpeed * Time.fixedDeltaTime);
+            //player.rb.velocity = normal * player.runSpeed; 
         }
 
 
