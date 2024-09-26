@@ -371,9 +371,9 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator AttackCoroutine()
     {
-        //어택 진행
+        
         animator.Play(attackHash);
-
+        //공격 로직 진행
         yield return attackWait;
 
         //Idle 전환
