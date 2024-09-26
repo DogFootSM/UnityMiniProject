@@ -24,6 +24,14 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
 
+    //공격 코루틴 변수
+    private WaitForSeconds attackWait;
+    private float attackTimer = 1f;
+
+    //데미지 코루틴 변수
+    private WaitForSeconds hurtWait;
+    private float hurtTimer = 1f;
+
     //애니메이터 hash
     private int idleHash;
     private int walkHash;
@@ -33,7 +41,7 @@ public class PlayerController : MonoBehaviour
     private int deathHash;
     private int curAnimHash;
 
-    private bool isAttack;
+    private bool underAttack;
 
     //x 축 이동 변수
     private float x;
@@ -50,6 +58,9 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+
+        attackWait = new WaitForSeconds(attackTimer);
+        hurtWait = new WaitForSeconds(hurtTimer);
 
         playerStates[(int)State.Idle] = new PlayerIdle(this);
         playerStates[(int)State.Move] = new PlayerMove(this);
@@ -96,7 +107,29 @@ public class PlayerController : MonoBehaviour
         x = Input.GetAxisRaw("Horizontal");
         y = Input.GetAxisRaw("Vertical");
     }
+
+
  
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.tag == "Monster")
+        {
+            Debug.Log("몬스터랑 접촉");
+            underAttack = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if(collision.gameObject.tag == "Monster")
+        {
+            underAttack = false;
+        }
+
+    }
+
+
 
     public class PlayerState : MachineState
     {   
@@ -141,6 +174,12 @@ public class PlayerController : MonoBehaviour
                 player.ChangeState(State.Attack); 
             }
 
+            if (player.underAttack)
+            {
+                player.ChangeState(State.Hurt);
+            }
+ 
+
         }
 
     }
@@ -157,9 +196,9 @@ public class PlayerController : MonoBehaviour
 
         public PlayerMove(PlayerController player) : base(player) { }
 
+ 
         public override void Update()
-        { 
-
+        {
             if (!Input.GetKey(KeyCode.LeftShift))
             {
                 curMoveState = MoveState.Walk;
@@ -168,23 +207,21 @@ public class PlayerController : MonoBehaviour
             {
                 curMoveState = MoveState.Run;
             }
-            
+
             if (Input.GetKeyDown(KeyCode.Space))
-            {
-                player.curState = State.Attack;
+            { 
+                player.ChangeState(State.Attack);
             }
 
-
             
-            if(player.x < 0)
+
+            if (player.x < 0)
             {
-                Debug.Log("flip true"); 
                 player.bodyRender.flipX = true;
                 player.hairRender.flipX = true;
             }
             else if (player.x > 0)
             {
-                Debug.Log("flip false");
                 player.bodyRender.flipX = false;
                 player.hairRender.flipX = false;
             }
@@ -192,6 +229,11 @@ public class PlayerController : MonoBehaviour
             if(player.x == 0 && player.y == 0)
             {
                 player.ChangeState(State.Idle);
+            }
+            
+            if (player.underAttack)
+            {
+                player.ChangeState(State.Hurt);
             }
 
 
@@ -217,7 +259,7 @@ public class PlayerController : MonoBehaviour
                     break;
 
                 case MoveState.Run: 
-                    player.animator.Play(player.walkHash);
+                    player.animator.Play(player.runHash);
                     Run();
                     break;
             }
@@ -236,23 +278,23 @@ public class PlayerController : MonoBehaviour
             //뛰는 상태일 때 에너지 빠르게 소모 추가 필요
 
             player.rb.MovePosition(player.rb.position+normal * player.runSpeed * Time.fixedDeltaTime);
- 
         }
 
 
     }
   
+
+
     public class PlayerAttack : PlayerState
     {
-        private float attackTimer;
         private Coroutine attackRoutine;
+
 
         public PlayerAttack(PlayerController player) : base(player) { }
 
         public override void Enter()
         {
-            Debug.Log("어택 엔터 진입");
-
+             
             if(player.x > 0)
             {
                 player.bodyRender.flipX = false;
@@ -264,10 +306,19 @@ public class PlayerController : MonoBehaviour
                 player.hairRender.flipX = true;
             }
 
-            attackRoutine = player.StartCoroutine(AttackCoroutine());
+            //공격 타이머 코루틴
+            attackRoutine = player.StartCoroutine(player.AttackCoroutine());
 
         }
 
+        public override void Update()
+        {
+            if (player.underAttack)
+            {
+                player.ChangeState(State.Hurt);
+            }
+
+        }
 
         public override void Exit()
         {
@@ -278,28 +329,68 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        private IEnumerator AttackCoroutine()
-        {
-            //어택 진행
-            player.animator.Play(player.attackHash);
 
-            yield return new WaitForSeconds(1f);
-
-            //Idle 전환
-            player.ChangeState(State.Idle);
-        }
     }
 
     public class PlayerHurt : PlayerState
     {
+        private Coroutine hurtRoutine;
+
         public PlayerHurt(PlayerController player) : base(player) { }
-    }
+
+        public override void Enter()
+        {
+
+            hurtRoutine = player.StartCoroutine(player.HurtCoroutine());
+            //HP 감소 로직
+
+        }
+
+        public override void Exit()
+        {
+            if(hurtRoutine != null)
+            {
+                player.StopCoroutine(hurtRoutine);
+            }
+             
+        }
+
+    } 
 
     public class PlayerDeath : PlayerState
     {
         public PlayerDeath(PlayerController player) : base(player) { }
+
+        public override void Enter()
+        {
+            player.animator.Play(player.deathHash);
+
+        }
+
     }
 
- 
+    private IEnumerator AttackCoroutine()
+    {
+        //어택 진행
+        animator.Play(attackHash);
+
+        yield return attackWait;
+
+        //Idle 전환
+        ChangeState(State.Idle);
+    }
+
+    private IEnumerator HurtCoroutine()
+    {
+        animator.Play(hurtHash);
+
+        yield return hurtWait;
+
+        //HP가 1 이상일 때에는 idle
+        ChangeState(State.Idle);
+
+        //HP가 1 이하일 때에는 Death
+        //ChangeState(State.Death);
+    }
 
 }
