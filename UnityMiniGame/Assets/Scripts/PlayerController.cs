@@ -28,8 +28,7 @@ public class PlayerController : MonoBehaviour
     private int idleHash;
     private int walkHash;
     private int runHash;
-    private int rightAttackHash;
-    private int leftAttackHash; 
+    private int attackHash; 
     private int hurtHash;
     private int deathHash;
     private int curAnimHash;
@@ -56,8 +55,7 @@ public class PlayerController : MonoBehaviour
         playerStates[(int)State.Move] = new PlayerMove(this);
         playerStates[(int)State.Attack] = new PlayerAttack(this);
         playerStates[(int)State.Hurt] = new PlayerHurt(this);
-        playerStates[(int)State.Death] = new PlayerDeath(this);
-         
+        playerStates[(int)State.Death] = new PlayerDeath(this); 
     }
 
     private void Start()
@@ -68,33 +66,28 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         InputKey();
-        Debug.Log($"현재 상태 : {curState}"); 
-        Debug.Log($"x : {x}");
-
+        Debug.Log($"현재 상태 : {curState}");
+         
         playerStates[(int)curState].Update();
 
         Debug.DrawRay(transform.position, transform.right, Color.red);
-
-        animator.Play(curAnimHash);
-
-
+         
     } 
 
     private void FixedUpdate()
     {
-        
+ 
         playerStates[(int)curState].FixedUpdate();
     }
-
-    //ChangeState() 메서드 구현
-    //이전 상태 종료 > 현재 상태 재생
-    //Update에서 상태를 바로 전환하지 않고
-    //어택은 코루틴 사용해서 딜레이를 주면서 전환
+ 
     public void ChangeState(State state)
     {
         //Exit
+        playerStates[(int)curState].Exit();
         //상태 변경
+        curState = state;
         //Enter
+        playerStates[(int)curState].Enter();
     }
 
 
@@ -120,10 +113,9 @@ public class PlayerController : MonoBehaviour
             player.idleHash = Animator.StringToHash("PlayerIdle");
             player.walkHash = Animator.StringToHash("PlayerWalk");
             player.runHash = Animator.StringToHash("PlayerRun");
-            player.rightAttackHash = Animator.StringToHash("RightPlayerAttack");
-            player.leftAttackHash = Animator.StringToHash("LeftPlayerAttack");
+            player.attackHash = Animator.StringToHash("PlayerAttack"); 
             player.hurtHash = Animator.StringToHash("PlayerHurt");
-            player.deathHash = Animator.StringToHash("PlayerDeath"); 
+            player.deathHash = Animator.StringToHash("PlayerDeath");
         } 
     }
 
@@ -131,19 +123,22 @@ public class PlayerController : MonoBehaviour
     {
         public PlayerIdle(PlayerController player) : base(player) { }
 
+        public override void Enter()
+        {
+            player.animator.Play(player.idleHash);
+        }
+
         public override void Update()
         {
-
-            player.curAnimHash = player.idleHash; 
-
+            
             if (player.x != 0 || player.y != 0)
             {
-                player.curState = State.Move;
+                player.ChangeState(State.Move);
             } 
 
             else if (Input.GetKeyDown(KeyCode.Space))
             {
-                player.curState = State.Attack;
+                player.ChangeState(State.Attack); 
             }
 
         }
@@ -180,7 +175,7 @@ public class PlayerController : MonoBehaviour
             }
 
 
-            //Enter
+            
             if(player.x < 0)
             {
                 Debug.Log("flip true"); 
@@ -196,7 +191,7 @@ public class PlayerController : MonoBehaviour
             
             if(player.x == 0 && player.y == 0)
             {
-                player.curState = State.Idle;
+                player.ChangeState(State.Idle);
             }
 
 
@@ -216,13 +211,13 @@ public class PlayerController : MonoBehaviour
 
             switch (curMoveState)
             {
-                case MoveState.Walk:
-                    player.curAnimHash = player.walkHash;
+                case MoveState.Walk: 
+                    player.animator.Play(player.walkHash);
                     Walk();
                     break;
 
-                case MoveState.Run:
-                    player.curAnimHash = player.runHash;
+                case MoveState.Run: 
+                    player.animator.Play(player.walkHash);
                     Run();
                     break;
             }
@@ -256,39 +251,42 @@ public class PlayerController : MonoBehaviour
 
         public override void Enter()
         {
-            
+            Debug.Log("어택 엔터 진입");
 
-        }
-
-        public override void Update()
-        {
-            
             if(player.x > 0)
             {
-                player.curAnimHash = player.rightAttackHash;
-                //공격 효과 적용
-                
+                player.bodyRender.flipX = false;
+                player.hairRender.flipX = false;
             }
             else if(player.x < 0)
             {
-                player.curAnimHash = player.leftAttackHash;
-                //공격 효과 적용
-
+                player.bodyRender.flipX = true;
+                player.hairRender.flipX = true;
             }
 
-            //공격이 끝났다면 Idle 상태로 전환
+            attackRoutine = player.StartCoroutine(AttackCoroutine());
 
-             
-             
+        }
+
+
+        public override void Exit()
+        {
+            if(attackRoutine != null)
+            {
+                player.StopCoroutine(attackRoutine);
+                attackRoutine = null;
+            }
         }
 
         private IEnumerator AttackCoroutine()
         {
             //어택 진행
-            yield return null;  
+            player.animator.Play(player.attackHash);
+
+            yield return new WaitForSeconds(1f);
 
             //Idle 전환
-
+            player.ChangeState(State.Idle);
         }
     }
 
