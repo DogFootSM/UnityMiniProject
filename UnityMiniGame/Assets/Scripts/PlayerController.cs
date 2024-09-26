@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private SpriteRenderer hairRender;
 
 
-    private enum State { Idle, Move, Attack, Hurt, Death, SIZE}
+    public enum State { Idle, Move, Attack, Hurt, Death, SIZE}
 
     //현재 상태
     private State curState = State.Idle;
@@ -28,11 +28,13 @@ public class PlayerController : MonoBehaviour
     private int idleHash;
     private int walkHash;
     private int runHash;
-    private int attackHash;
+    private int rightAttackHash;
+    private int leftAttackHash; 
     private int hurtHash;
     private int deathHash;
     private int curAnimHash;
 
+    private bool isAttack;
 
     //x 축 이동 변수
     private float x;
@@ -67,15 +69,32 @@ public class PlayerController : MonoBehaviour
     {
         InputKey();
         Debug.Log($"현재 상태 : {curState}"); 
+        Debug.Log($"x : {x}");
+
         playerStates[(int)curState].Update();
-    }
+
+        Debug.DrawRay(transform.position, transform.right, Color.red);
+
+        animator.Play(curAnimHash);
 
 
+    } 
 
     private void FixedUpdate()
     {
-        animator.Play(curAnimHash);
+        
         playerStates[(int)curState].FixedUpdate();
+    }
+
+    //ChangeState() 메서드 구현
+    //이전 상태 종료 > 현재 상태 재생
+    //Update에서 상태를 바로 전환하지 않고
+    //어택은 코루틴 사용해서 딜레이를 주면서 전환
+    public void ChangeState(State state)
+    {
+        //Exit
+        //상태 변경
+        //Enter
     }
 
 
@@ -97,15 +116,14 @@ public class PlayerController : MonoBehaviour
         }
 
         public override void Enter()
-        {
- 
+        { 
             player.idleHash = Animator.StringToHash("PlayerIdle");
             player.walkHash = Animator.StringToHash("PlayerWalk");
             player.runHash = Animator.StringToHash("PlayerRun");
-            player.attackHash = Animator.StringToHash("PlayerHurt");
-            player.deathHash = Animator.StringToHash("PlayerDeath");
-
-
+            player.rightAttackHash = Animator.StringToHash("RightPlayerAttack");
+            player.leftAttackHash = Animator.StringToHash("LeftPlayerAttack");
+            player.hurtHash = Animator.StringToHash("PlayerHurt");
+            player.deathHash = Animator.StringToHash("PlayerDeath"); 
         } 
     }
 
@@ -115,12 +133,19 @@ public class PlayerController : MonoBehaviour
 
         public override void Update()
         {
+
             player.curAnimHash = player.idleHash; 
 
             if (player.x != 0 || player.y != 0)
             {
                 player.curState = State.Move;
             } 
+
+            else if (Input.GetKeyDown(KeyCode.Space))
+            {
+                player.curState = State.Attack;
+            }
+
         }
 
     }
@@ -149,19 +174,26 @@ public class PlayerController : MonoBehaviour
                 curMoveState = MoveState.Run;
             }
             
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                player.curState = State.Attack;
+            }
 
+
+            //Enter
             if(player.x < 0)
             {
-                //헤어, 바디 FlipX = True;
+                Debug.Log("flip true"); 
                 player.bodyRender.flipX = true;
                 player.hairRender.flipX = true;
             }
             else if (player.x > 0)
             {
+                Debug.Log("flip false");
                 player.bodyRender.flipX = false;
                 player.hairRender.flipX = false;
             }
-             
+            
             if(player.x == 0 && player.y == 0)
             {
                 player.curState = State.Idle;
@@ -172,6 +204,16 @@ public class PlayerController : MonoBehaviour
 
         public override void FixedUpdate()
         {
+            xMove = player.x;
+            yMove = player.y;
+
+            normal = new Vector2(xMove, yMove);
+
+            if (normal.sqrMagnitude > 1)
+            {
+                normal.Normalize();
+            }
+
             switch (curMoveState)
             {
                 case MoveState.Walk:
@@ -188,40 +230,18 @@ public class PlayerController : MonoBehaviour
          
         private void Walk()
         {
-            //걷고 있을 때 에너지 소모
-
-            xMove = player.x;
-            yMove = player.y;
-
-            normal = new Vector2(xMove, yMove);
-
-            if (normal.sqrMagnitude > 1)
-            {
-                normal.Normalize();
-            }
-
+            //걷고 있을 때 에너지 소모 추가 필요
+             
             player.rb.MovePosition(player.rb.position + normal * player.walkSpeed * Time.fixedDeltaTime);
-
-            //velocity 이동 Rigidbody.MovePosition으로 수정 필요
-            //player.rb.velocity = normal * player.walkSpeed;
+ 
         }
 
         private void Run()
         {
-            //뛰는 상태일 때 에너지 빠르게 소모
-
-            xMove = player.x;
-            yMove = player.y;
-
-            normal = new Vector2(xMove, yMove);
-
-            if (normal.sqrMagnitude > 1)
-            {
-                normal.Normalize();
-            }
+            //뛰는 상태일 때 에너지 빠르게 소모 추가 필요
 
             player.rb.MovePosition(player.rb.position+normal * player.runSpeed * Time.fixedDeltaTime);
-            //player.rb.velocity = normal * player.runSpeed; 
+ 
         }
 
 
@@ -229,7 +249,47 @@ public class PlayerController : MonoBehaviour
   
     public class PlayerAttack : PlayerState
     {
+        private float attackTimer;
+        private Coroutine attackRoutine;
+
         public PlayerAttack(PlayerController player) : base(player) { }
+
+        public override void Enter()
+        {
+            
+
+        }
+
+        public override void Update()
+        {
+            
+            if(player.x > 0)
+            {
+                player.curAnimHash = player.rightAttackHash;
+                //공격 효과 적용
+                
+            }
+            else if(player.x < 0)
+            {
+                player.curAnimHash = player.leftAttackHash;
+                //공격 효과 적용
+
+            }
+
+            //공격이 끝났다면 Idle 상태로 전환
+
+             
+             
+        }
+
+        private IEnumerator AttackCoroutine()
+        {
+            //어택 진행
+            yield return null;  
+
+            //Idle 전환
+
+        }
     }
 
     public class PlayerHurt : PlayerState
