@@ -24,7 +24,7 @@ public class CamController : MonoBehaviour
     public void CamFollow()
     {
         //카메라 이동 속도
-        float followSpeed = 1.5f * Time.deltaTime;
+        float followSpeed = 5.5f * Time.deltaTime;
         //카메라 따라갈 위치
         Vector3 targetPos = target.position + offset;
 
