@@ -18,9 +18,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Crop cropSeed;
 
     public enum State { Idle, Move, Attack, Hurt, Death, Water, SIZE }
+    
+    //손에 들고 있는 도구 상태
+    public enum FarmTool { Knife, Axe, Hammer, Shovels , Pickax, Rod, Sprayer, SIZE}
 
-    //현재 상태
+
+    //현재 플레이어 상태
     private State curState = State.Idle;
+
+    //현재 들고 있는 도구 상태
+    private FarmTool farmTool = FarmTool.Knife;
 
     //플레이어 현재 상태 배열
     private PlayerState[] playerStates = new PlayerState[(int)State.SIZE];
@@ -99,10 +106,10 @@ public class PlayerController : MonoBehaviour
         playerStates[(int)curState].Enter();
     }
 
-
-
+ 
     private void Update()
     {
+  
         Debug.Log($"현재 상태:{curState}");
         InputKey();
 
@@ -127,7 +134,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
+
         playerStates[(int)curState].FixedUpdate();
     }
 
@@ -149,7 +156,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    //씨앗을 심는 기능 함수
+    //보유중인 씨앗을 땅이 파져있는 상태일때 심는 기능
     public void Plant()
     {
 
@@ -225,18 +232,30 @@ public class PlayerController : MonoBehaviour
                 player.ChangeState(State.Hurt);
             }
 
-            
+
             if (player.hit.collider != null)
             {
                 Debug.Log(player.hit.collider.gameObject.tag);
-                if (player.hit.collider.gameObject.tag == "Crop" && Input.GetKeyDown(KeyCode.V))
+                if (player.hit.collider.gameObject.tag == "Crop")
                 {
                     player.cropSeed = player.hit.collider.gameObject.GetComponent<Crop>();
-                    player.ChangeState(State.Water);
+                    
+                    //수확 가능 상태가 아닌 상태에서 농작물에 물 주기
+                    if (!player.cropSeed.IsHarvestable && Input.GetKeyDown(KeyCode.V))
+                    {
+                        player.ChangeState(State.Water);
+                    }
+                    //수확 가능 상태에서 마우스 클릭 시 수확
+                    else if (player.cropSeed.IsHarvestable && Input.GetMouseButtonDown(0))
+                    {
+                        //농작물 수확
+                        player.cropSeed.Harvest();
+                        player.ChangeState(State.Idle);
+                    }
+
                 }
             }
-
-
+             
         }
 
     }
@@ -266,7 +285,7 @@ public class PlayerController : MonoBehaviour
             {
                 curMoveState = MoveState.Walk;
                 //걷는 시간당 에너지 소모
-                player.energy -= Time.deltaTime * 0.1f + 50;
+                player.energy -= Time.deltaTime * 0.1f;
                 UIManager.Instance.EnergyBarUpdate(player.energy);
             }
             else if (Input.GetKey(KeyCode.LeftShift))
@@ -276,17 +295,6 @@ public class PlayerController : MonoBehaviour
                 player.energy -= Time.deltaTime * 0.3f;
                 UIManager.Instance.EnergyBarUpdate(player.energy);
             }
-
-            if (player.hit.collider != null)
-            {
-                Debug.Log(player.hit.collider.gameObject.tag);
-                if (player.hit.collider.gameObject.tag == "Crop" && Input.GetKeyDown(KeyCode.V))
-                { 
-                    player.cropSeed = player.hit.collider.gameObject.GetComponent<Crop>();
-                    player.ChangeState(State.Water);
-                } 
-            } 
-
 
 
             if (Input.GetKeyDown(KeyCode.Space))
@@ -376,9 +384,13 @@ public class PlayerController : MonoBehaviour
                 player.hairRender.flipX = true;
             }
 
-            //Crop, Monster 레이어 확인 후 레이어에 맞게 공격, 수확 진행
-
+            //오브젝트(나무, 돌 등), Monster 레이어 확인 후 레이어에 맞게 공격, 수확 진행 
             player.animator.Play(player.attackHash);
+
+
+
+
+
 
             //공격 타이머 코루틴
             attackRoutine = player.StartCoroutine(player.AttackCoroutine());
@@ -451,16 +463,16 @@ public class PlayerController : MonoBehaviour
 
         public override void Enter()
         {
-             
+  
             player.animator.Play(player.waterhHash);
             wateringRoutine = player.StartCoroutine(player.WateringCoroutine());
 
-            
+
         }
 
         public override void Exit()
         {
-            if(wateringRoutine != null)
+            if (wateringRoutine != null)
             {
                 player.StopCoroutine(wateringRoutine);
             }
@@ -494,7 +506,7 @@ public class PlayerController : MonoBehaviour
     {
         //물 주기 기능 동작 
         Debug.Log("물을 줬습니다.");
-
+        cropSeed.Grow();
         yield return waterWait;
 
         ChangeState(State.Idle);
