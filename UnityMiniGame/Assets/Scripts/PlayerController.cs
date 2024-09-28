@@ -11,16 +11,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float runSpeed;
     [SerializeField] private SpriteRenderer bodyRender;
     [SerializeField] private SpriteRenderer hairRender;
-
+    [SerializeField] private SpriteRenderer toolRender;
 
 
     //보유중인 작물 씨앗
     [SerializeField] private Crop cropSeed;
+    [SerializeField] private Inventory inventory;
+
+
 
     public enum State { Idle, Move, Attack, Hurt, Death, Water, SIZE }
-    
+
     //손에 들고 있는 도구 상태
-    public enum FarmTool { Knife, Axe, Hammer, Shovels , Pickax, Rod, Sprayer, SIZE}
+    public enum FarmTool { Knife, Axe, Hammer, Shovels, Pickax, Rod, Sprayer, SIZE }
 
 
     //현재 플레이어 상태
@@ -49,7 +52,7 @@ public class PlayerController : MonoBehaviour
 
 
     RaycastHit2D hit;
-    private LayerMask layerMask;
+    private LayerMask cropLayerMask;
     private Vector2 rayDir;
 
     //애니메이터 hash
@@ -60,9 +63,13 @@ public class PlayerController : MonoBehaviour
     private int hurtHash;
     private int deathHash;
     private int waterhHash;
-    private int curAnimHash;
 
+    //피격중 상태
     private bool underAttack;
+
+    //물을 준 상태
+    private bool isWatering;
+
 
     //x 축 이동 변수
     private float x;
@@ -97,8 +104,10 @@ public class PlayerController : MonoBehaviour
         playerStates[(int)State.Death] = new PlayerDeath(this);
         playerStates[(int)State.Water] = new PlayerWater(this);
 
-        //작물, 몬스터만 감지할 레이어마스크
-        layerMask = (1 << LayerMask.NameToLayer("Crop")) + (1 << LayerMask.NameToLayer("Monster"));
+        //작물 감지할 레이어마스크
+        cropLayerMask = 1 << LayerMask.NameToLayer("Crop");
+        //objectMask = (1 << LayerMask.NameToLayer("Object")) + (1 << LayerMask.NameToLayer("Monster"));
+
     }
 
     private void Start()
@@ -106,13 +115,12 @@ public class PlayerController : MonoBehaviour
         playerStates[(int)curState].Enter();
     }
 
- 
+
+
+
     private void Update()
     {
-  
-        Debug.Log($"현재 상태:{curState}");
-        InputKey();
-
+         
         playerStates[(int)curState].Update();
 
         //레이의 방향 조정
@@ -127,7 +135,31 @@ public class PlayerController : MonoBehaviour
 
         //농작물, 몬스터 확인 레이
         Debug.DrawRay(transform.position, rayDir * 1.5f, Color.red);
-        hit = Physics2D.Raycast(transform.position, rayDir, 1.5f, layerMask);
+        hit = Physics2D.Raycast(transform.position, rayDir, 1.5f, cropLayerMask);
+
+
+
+        //인벤토리 Open/Close
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (!inventory.IsActive)
+            {
+                inventory.gameObject.SetActive(true);
+            }
+            else
+            {
+                inventory.gameObject.SetActive(false);
+            }
+
+        }
+
+        //인벤토리 비활성화 상태에서만 움직임 가능
+        if (!inventory.IsActive)
+        {
+            InputKey();
+        }
+
+
 
     }
 
@@ -239,23 +271,44 @@ public class PlayerController : MonoBehaviour
                 if (player.hit.collider.gameObject.tag == "Crop")
                 {
                     player.cropSeed = player.hit.collider.gameObject.GetComponent<Crop>();
-                    
+
                     //수확 가능 상태가 아닌 상태에서 농작물에 물 주기
                     if (!player.cropSeed.IsHarvestable && Input.GetKeyDown(KeyCode.V))
                     {
-                        player.ChangeState(State.Water);
+                        //물을 주지 않은 상태에서만 물 주기
+                        if (!player.cropSeed.IsWatering)
+                        {
+                            player.cropSeed.IsWatering = true;
+                            player.ChangeState(State.Water);
+                        }
+
                     }
                     //수확 가능 상태에서 마우스 클릭 시 수확
-                    else if (player.cropSeed.IsHarvestable && Input.GetMouseButtonDown(0))
+                    else if (player.cropSeed.IsHarvestable)
                     {
-                        //농작물 수확
-                        player.cropSeed.Harvest();
-                        player.ChangeState(State.Idle);
-                    }
+                        if(player.cropSeed.OnMouse && Input.GetMouseButtonDown(0))
+                        {
+                            //농작물 수확 후 인벤토리 추가 
+                            player.inventory.AddItem(player.cropSeed.Harvest());
 
+                            player.ChangeState(State.Idle);
+
+                            //수확 후 오브젝트 삭제
+                            //Destroy(player.cropSeed.gameObject);
+
+                        } 
+                    }
+                }
+                else
+                {
+                    player.cropSeed = null;
                 }
             }
-             
+            else
+            {
+                player.cropSeed = null;
+            }
+
         }
 
     }
@@ -306,11 +359,13 @@ public class PlayerController : MonoBehaviour
             {
                 player.bodyRender.flipX = true;
                 player.hairRender.flipX = true;
+                player.toolRender.flipX = true;
             }
             else if (player.x > 0)
             {
                 player.bodyRender.flipX = false;
                 player.hairRender.flipX = false;
+                player.toolRender.flipX = false;
             }
 
             if (player.underAttack)
@@ -463,7 +518,7 @@ public class PlayerController : MonoBehaviour
 
         public override void Enter()
         {
-  
+
             player.animator.Play(player.waterhHash);
             wateringRoutine = player.StartCoroutine(player.WateringCoroutine());
 

@@ -48,6 +48,21 @@ AnimationClip:
     path: Hair
     classID: 212
     script: {fileID: 0}
+  - curve:
+    - time: 0
+      value: {fileID: -452562823, guid: 82894ee2dbd564240bbedecb2438b5e1, type: 3}
+    - time: 0.083333336
+      value: {fileID: -430295952, guid: 82894ee2dbd564240bbedecb2438b5e1, type: 3}
+    - time: 0.16666667
+      value: {fileID: -942229949, guid: 82894ee2dbd564240bbedecb2438b5e1, type: 3}
+    - time: 0.25
+      value: {fileID: 11454481, guid: 82894ee2dbd564240bbedecb2438b5e1, type: 3}
+    - time: 0.33333334
+      value: {fileID: -1131546897, guid: 82894ee2dbd564240bbedecb2438b5e1, type: 3}
+    attribute: m_Sprite
+    path: FarmTool
+    classID: 212
+    script: {fileID: 0}
   m_SampleRate: 60
   m_WrapMode: 0
   m_Bounds:
@@ -69,6 +84,13 @@ AnimationClip:
       typeID: 212
       customType: 23
       isPPtrCurve: 1
+    - serializedVersion: 2
+      path: 568066711
+      attribute: 0
+      script: {fileID: 0}
+      typeID: 212
+      customType: 23
+      isPPtrCurve: 1
     pptrCurveMapping:
     - {fileID: -584555907, guid: 409c6f7abca190d48918d7dcdc8b6f1e, type: 3}
     - {fileID: 662784265, guid: 409c6f7abca190d48918d7dcdc8b6f1e, type: 3}
@@ -80,6 +102,11 @@ AnimationClip:
     - {fileID: 1579027206, guid: b874ef6857ad623469f812a6e8fff10a, type: 3}
     - {fileID: -368424096, guid: b874ef6857ad623469f812a6e8fff10a, type: 3}
     - {fileID: 177335365, guid: b874ef6857ad623469f812a6e8fff10a, type: 3}
+    - {fileID: -452562823, guid: 82894ee2dbd564240bbedecb2438b5e1, type: 3}
+    - {fileID: -430295952, guid: 82894ee2dbd564240bbedecb2438b5e1, type: 3}
+    - {fileID: -942229949, guid: 82894ee2dbd564240bbedecb2438b5e1, type: 3}
+    - {fileID: 11454481, guid: 82894ee2dbd564240bbedecb2438b5e1, type: 3}
+    - {fileID: -1131546897, guid: 82894ee2dbd564240bbedecb2438b5e1, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}

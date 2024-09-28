@@ -9,7 +9,8 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
 
-    [SerializeField] private Slider energyBar;
+    [SerializeField] private Slider energyBar; 
+
 
     private void Awake()
     {
@@ -29,6 +30,6 @@ public class UIManager : MonoBehaviour
     {
         energyBar.value = value * 0.01f; 
     }
-
+ 
 
 }
