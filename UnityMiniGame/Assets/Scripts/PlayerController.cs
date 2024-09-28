@@ -136,27 +136,16 @@ public class PlayerController : MonoBehaviour
         //농작물, 몬스터 확인 레이
         Debug.DrawRay(transform.position, rayDir * 1.5f, Color.red);
         hit = Physics2D.Raycast(transform.position, rayDir, 1.5f, cropLayerMask);
-
-
-
-        //인벤토리 Open/Close
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            if (!inventory.IsActive)
-            {
-                inventory.gameObject.SetActive(true);
-            }
-            else
-            {
-                inventory.gameObject.SetActive(false);
-            }
-
-        }
-
+ 
         //인벤토리 비활성화 상태에서만 움직임 가능
-        if (!inventory.IsActive)
+        if (!Inventory.isInventoryActive)
         {
             InputKey();
+             
+        }
+        else
+        {
+            ChangeState(State.Idle);
         }
 
 
@@ -289,12 +278,12 @@ public class PlayerController : MonoBehaviour
                         if(player.cropSeed.OnMouse && Input.GetMouseButtonDown(0))
                         {
                             //농작물 수확 후 인벤토리 추가 
-                            player.inventory.AddItem(player.cropSeed.Harvest());
+                            //player.inventory.AddItem(player.cropSeed.Harvest());
 
                             player.ChangeState(State.Idle);
 
                             //수확 후 오브젝트 삭제
-                            //Destroy(player.cropSeed.gameObject);
+                            Destroy(player.cropSeed.gameObject);
 
                         } 
                     }

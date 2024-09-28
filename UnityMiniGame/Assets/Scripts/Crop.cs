@@ -19,6 +19,9 @@ public class Crop : MonoBehaviour
     //작물 이름
     [SerializeField] private string name;
 
+    //농작물 ID
+    [Header("아이템 ID")]
+    [SerializeField] private int cropItemID;
 
     private SpriteRenderer cropRenderer;
     private Coroutine growRoutine;
@@ -77,8 +80,8 @@ public class Crop : MonoBehaviour
     {
         if (isHarvestable)
         {
-            mousePos = Input.mousePosition;
-            mousePos = Camera.main.ScreenToWorldPoint(mousePos);
+ 
+            mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
             RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
 
@@ -92,13 +95,14 @@ public class Crop : MonoBehaviour
                     //내 자신과 비교해서 같으면 수확 가능 안내 활성화
                     if (instance == this)
                     {
+                        harvestText.text = name + " 수확 가능";
                         harvestText.gameObject.SetActive(true);
                         onMouse = true;
                     }
                 }
                 else
                 {
-                    harvestText.gameObject.SetActive(true);
+                    harvestText.gameObject.SetActive(false);
                     onMouse = false;
                 }
             }
@@ -149,7 +153,7 @@ public class Crop : MonoBehaviour
         cropRenderer.sprite = cropSprite[growthStage];
 
         //cropSprite.count -1 이미지 > 인벤토리에 노출될 이미지
-        if (growthStage == cropSprite.Count - 2)
+        if (growthStage == cropSprite.Count - 1)
         {
             isHarvestable = true;
  

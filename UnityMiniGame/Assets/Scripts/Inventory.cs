@@ -2,58 +2,110 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Inventory : MonoBehaviour
+public class Inventory : InventoryController
 {
 
-    [SerializeField] List<Crop> crops = new List<Crop>();
 
-    private PlayerController player;
-
-    private bool isActive = false;
-    public bool IsActive { get { return isActive; } set { isActive = value; } }
+    public static bool isInventoryActive = false;
 
 
-    private void Start()
+    void Awake()
     {
-        player = GameObject.FindObjectOfType<PlayerController>();
+        base.Awake();
     }
 
     private void Update()
     {
-        for(int i = 0; i < crops.Count; i++)
-        {
-            Debug.Log($"인벤토리 {i} : {crops[i].name}");
-        }
-    }
 
+        OpenInventory();
+    }
 
 
     private void OnEnable()
     {
         //인벤토리 오픈 효과음 재생
-
-        //인벤토리 오픈
-        isActive = true;
+ 
     }
 
     private void OnDisable()
     {
         //인벤토리 클로즈 효과음 재생
 
-        //인벤토리 클로즈
-        isActive = false;
+ 
     }
 
-    public void AddItem(Crop crop)
+    public void OpenInventory()
     {
-       
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (!isInventoryActive)
+            {
+                inventoryBase.SetActive(true);
+                isInventoryActive = true;
+            }
+            else
+            {
+                inventoryBase.SetActive(false);
+                isInventoryActive = false;
+            }
+        }
     }
 
-    public void RemoveItem()
+    public void ButtonClose()
     {
 
+        inventoryBase.SetActive(false);
+        isInventoryActive = false;
+
     }
+
+
+
+    public void PickUpItemp(Item item, int count = 1)
+    {
+        if (item.Overlap)
+        {
+
+            for (int i = 0; i < slots.Count; i++)
+            {
+                if (slots[i].Item != null && slots[i].Item.ItemID == item.ItemID)
+                {
+                    slots[i].UpdateSlotCount(count);
+                    Debug.Log("중첩");
+                    return;
+                }
+                else if (slots[i].Item == null)
+                {
+                    slots[i].AddItem(item);
+                    Debug.Log("중첩3");
+                    return;
+                }
+            }
+
+
+        }
+        else
+        {
+            for (int i = 0; i < slots.Count; i++)
+            {
+                if (slots[i].Item == null)
+                {
+                    slots[i].AddItem(item);
+                    Debug.Log("중첩x");
+                    return;
+                }
+            }
+
+        }
+
+
+    }
+
+ 
+
+ 
 
 
 }
