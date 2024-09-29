@@ -1,25 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class MouseCursor : MonoBehaviour
 {
     [SerializeField] private Sprite cursorImage;
+    
 
     private Vector2 mousePos;
-    [SerializeField]  private Camera cam;
+ 
+    private SpriteRenderer mouseRender;
 
-    private void Start()
+
+    private void Awake()
     {
-        cam = Camera.main;
-    }
+        mouseRender = GetComponent<SpriteRenderer>();
+        mouseRender.sprite = cursorImage;
+     }
+
+ 
 
     private void Update()
     {
-      
-        mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
+ 
+        transform.position = GameManager.Instance.mousePos;
+ 
+        
 
+        //농작물이 수확 가능한 상태일 때 농작물 인디케이터 노출
+
+        //인벤토리 > 아이템 인디케이터 노출
 
 
 

@@ -10,6 +10,7 @@ public class Crop : MonoBehaviour
 {
      
     [SerializeField] private TextMeshProUGUI harvestText;
+    public TextMeshProUGUI HarvestText { get { return harvestText; } }
 
     [Header("아이템 데이터")]
     [SerializeField] private Item _item;            //넣어줄 농작물 데이터
@@ -44,27 +45,22 @@ public class Crop : MonoBehaviour
 
     //마우스 오버 상태
     private bool onMouse;
-    public bool OnMouse { get { return onMouse; } }
+    public bool OnMouse { get { return onMouse; } set { onMouse = value; } }
 
     //마우스 위치
     private Vector2 mousePos; 
 
     private void Awake()
     {
-         
-        growWait = new WaitForSeconds(growTime);
-        cropRenderer = GetComponent<SpriteRenderer>();  
-    }
-
-    private void Start()
-    {
         cropSprite = _item.Sprites;
         cropItemID = _item.ItemID;
         name = _item.name;
         growTime = _item.GrowthTime;
+
+        growWait = new WaitForSeconds(growTime);
+        cropRenderer = GetComponent<SpriteRenderer>();  
     }
-
-
+ 
 
     private void Update()
     {
@@ -84,10 +80,8 @@ public class Crop : MonoBehaviour
     {
         if (isHarvestable)
         {
- 
-            mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
+            RaycastHit2D hit = Physics2D.Raycast(GameManager.Instance.mousePos, Vector2.zero);
 
             if (hit.collider != null)
             {
@@ -143,9 +137,7 @@ public class Crop : MonoBehaviour
     private IEnumerator CropGrowthCoroutine()
     {
 
-        //성장 단계에 맞는 이미지 노출
-        //growthStage++;
-
+        //성장 단계에 맞는 이미지 노출 
         //물을 주고 일정 시간이 지난 후 농작물 성장
         //플레이어 취침 및 맵의 시간 영향
         yield return growWait;
