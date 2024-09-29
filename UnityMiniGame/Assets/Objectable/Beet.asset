@@ -18,3 +18,9 @@ MonoBehaviour:
   consumable: 1
   itemType: 0
   itemImage: {fileID: 21300000, guid: 4724bc10f64434141b4200649542d914, type: 3}
+  growthTime: 2.5
+  sprites:
+  - {fileID: 21300000, guid: 9d47e176b0a87454b8b14881a4019f4d, type: 3}
+  - {fileID: 21300000, guid: ae6642115b726c34989ebcd3b5a4f402, type: 3}
+  - {fileID: 21300000, guid: 66c620d5e54a8b6459be9b3269048d11, type: 3}
+  - {fileID: 21300000, guid: 9d87c7d2d97e65541894571aaac5bb7b, type: 3}

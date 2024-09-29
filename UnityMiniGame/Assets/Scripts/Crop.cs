@@ -8,67 +8,71 @@ using UnityEngine.Events;
 
 public class Crop : MonoBehaviour
 {
-    //농작물 스파라이트 이미지 저장 배열
-    [SerializeField] private List<Sprite> cropSprite = new List<Sprite>();
-
+     
     [SerializeField] private TextMeshProUGUI harvestText;
 
-    //농작물 성장 시간
-    [SerializeField] private float growTime;
+    [Header("아이템 데이터")]
+    [SerializeField] private Item _item;            //넣어줄 농작물 데이터
+    private int cropItemID;        //농작물 ID
+    private string name;           //농작물 이름
+    private float growTime;        //농작물 성장 시간
+    private int effect;            //작물 섭취 효과
 
-    //작물 이름
-    [SerializeField] private string name;
-
-    //농작물 ID
-    [Header("아이템 ID")]
-    [SerializeField] private int cropItemID;
-
-    private SpriteRenderer cropRenderer;
+    
+    private SpriteRenderer cropRenderer;            //맵에 노출될 농작물 이미지
     private Coroutine growRoutine;
     private WaitForSeconds growWait;
- 
+
+    //농작물 애니메이션 배열
+    private List<Sprite> cropSprite = new List<Sprite>();
+
+    //농작물 이미지 배열 사이즈
     public int CropSize { get { return cropSprite.Count; } }
 
     //작물 성장 단계
     private int growthStage;
     public int GrowthStage { get { return growthStage; } }
 
-
-    //작물 섭취 효과
-    private int effect;
-
      
     //수확 상태
     private bool isHarvestable = false;
     public bool IsHarvestable { get { return isHarvestable; } }
 
+    //물을 준 상태
     private bool isWatering = false;
     public bool IsWatering { get { return isWatering; } set { isWatering = value; } }
 
+    //마우스 오버 상태
     private bool onMouse;
     public bool OnMouse { get { return onMouse; } }
 
+    //마우스 위치
     private Vector2 mousePos; 
 
     private void Awake()
     {
+         
         growWait = new WaitForSeconds(growTime);
         cropRenderer = GetComponent<SpriteRenderer>();  
+    }
+
+    private void Start()
+    {
+        cropSprite = _item.Sprites;
+        cropItemID = _item.ItemID;
+        name = _item.name;
+        growTime = _item.GrowthTime;
     }
 
 
 
     private void Update()
     {
-
         if (isHarvestable && growRoutine != null)
         {
             StopCoroutine(growRoutine);
-        }
-
-
-        MouseOnCrop();
-         
+        } 
+        MouseOnCrop(); 
     }
 
     private void OnDisable()
@@ -126,15 +130,12 @@ public class Crop : MonoBehaviour
     }
 
     //작물 수확 함수
-    public Crop Harvest()
+    public Item Harvest()
     {
+        Debug.Log($"{name} 수확");
 
-        //destroy에서 인벤토리 저장으로 변경 필요
-        //수확한 농작물을 Return?
-        Debug.Log("비트 수확");
-
-        return this;
-
+        //아이템 데이터 반환
+        return _item; 
     }
 
 
@@ -143,20 +144,18 @@ public class Crop : MonoBehaviour
     {
 
         //성장 단계에 맞는 이미지 노출
-        growthStage++;
+        //growthStage++;
 
         //물을 주고 일정 시간이 지난 후 농작물 성장
         //플레이어 취침 및 맵의 시간 영향
         yield return growWait;
 
         isWatering = false;
-        cropRenderer.sprite = cropSprite[growthStage];
+        cropRenderer.sprite = cropSprite[growthStage++];
 
-        //cropSprite.count -1 이미지 > 인벤토리에 노출될 이미지
-        if (growthStage == cropSprite.Count - 1)
+        if (growthStage == cropSprite.Count)
         {
-            isHarvestable = true;
- 
+            isHarvestable = true; 
         }
     }
  

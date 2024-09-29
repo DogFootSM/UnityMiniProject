@@ -208,6 +208,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: d036a03229ceabc44adf56a5d576aea1, type: 3}
   - {fileID: 21300000, guid: d1ff2942eb05e5c44b302a9ed4a335bc, type: 3}
   harvestText: {fileID: 5751698506953965341}
+  _item: {fileID: 11400000, guid: 5697aeff92b2aec4bb54036697a44248, type: 2}
   growTime: 3.5
   name: "\uB2F9\uADFC"
   cropItemID: 0

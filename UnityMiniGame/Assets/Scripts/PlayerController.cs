@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
 
     public enum State { Idle, Move, Attack, Hurt, Death, Water, SIZE }
 
-    //손에 들고 있는 도구 상태
+    //손에 들고 있는 도구 상태 -> 추후 Item 클래스 내용으로 사용
     public enum FarmTool { Knife, Axe, Hammer, Shovels, Pickax, Rod, Sprayer, SIZE }
 
 
@@ -278,7 +278,7 @@ public class PlayerController : MonoBehaviour
                         if(player.cropSeed.OnMouse && Input.GetMouseButtonDown(0))
                         {
                             //농작물 수확 후 인벤토리 추가 
-                            //player.inventory.AddItem(player.cropSeed.Harvest());
+                            player.inventory.PickUpItemp(player.cropSeed.Harvest());
 
                             player.ChangeState(State.Idle);
 
