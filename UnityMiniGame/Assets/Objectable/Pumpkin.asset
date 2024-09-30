@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c7188eb10f28ba045938d2cdacf297d1, type: 3}
-  m_Name: Carrot
+  m_Name: Pumpkin
   m_EditorClassIdentifier: 
-  itemID: 2
+  itemID: 3
   overlap: 1
   interactive: 0
   consumable: 1
   itemType: 0
-  itemImage: {fileID: 21300000, guid: d44b3c8bba89be241a466ddaa90b70cc, type: 3}
-  growthTime: 3.5
+  itemImage: {fileID: 21300000, guid: 09511f207b9f4744eac4b28b855c9ad6, type: 3}
+  growthTime: 5
   sprites:
-  - {fileID: 21300000, guid: 77b7d1939ce15a44ba27f09c6ef6ef46, type: 3}
-  - {fileID: 21300000, guid: 589ec3deb7969224d84bb7793150fdbc, type: 3}
-  - {fileID: 21300000, guid: d036a03229ceabc44adf56a5d576aea1, type: 3}
-  - {fileID: 21300000, guid: d1ff2942eb05e5c44b302a9ed4a335bc, type: 3}
-  itemName: "\uB2F9\uADFC"
+  - {fileID: 21300000, guid: f522a0d8274aeef42b8b000ced3c8b44, type: 3}
+  - {fileID: 21300000, guid: 712fcb0f283d6ff4da7860de0a48caa1, type: 3}
+  - {fileID: 21300000, guid: a3d41944b24e317448b8eeddfb112baf, type: 3}
+  - {fileID: 21300000, guid: 37b3d911866f5dd43b00938b1974eb13, type: 3}
+  itemName: "\uD638\uBC15"

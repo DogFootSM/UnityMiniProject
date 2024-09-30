@@ -51,4 +51,9 @@ public class Item : ScriptableObject
     [SerializeField] List<Sprite> sprites = new List<Sprite>();
     public List<Sprite> Sprites { get { return sprites; } }
 
+    [Header("아이템 이름")]
+    [SerializeField] private string itemName;
+    public string ItemName { get { return itemName; } }
+
+
 }

@@ -54,7 +54,7 @@ public class Crop : MonoBehaviour
     {
         cropSprite = _item.Sprites;
         cropItemID = _item.ItemID;
-        name = _item.name;
+        name = _item.ItemName;
         growTime = _item.GrowthTime;
 
         growWait = new WaitForSeconds(growTime);

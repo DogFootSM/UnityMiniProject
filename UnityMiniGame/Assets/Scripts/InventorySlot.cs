@@ -28,9 +28,15 @@ public class InventorySlot : MonoBehaviour
         {
             itemCountText.text = "";
         }
+ 
+
 
     }
 
+    public InventorySlot GetSlotItem()
+    {
+        return this;
+    }
 
     //아이템을 새로 추가
     public void AddItem(Item item, int count =1)

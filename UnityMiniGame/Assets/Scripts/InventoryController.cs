@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InventoryController : MonoBehaviour
 {
-    [SerializeField] protected GameObject inventoryBase;
+    [SerializeField] protected GameObject inventoryUI;
     [SerializeField] protected GameObject inventorySlotsParent;
     [SerializeField] protected List<InventorySlot> slots = new List<InventorySlot>(); 
 
@@ -17,7 +17,7 @@ public class InventoryController : MonoBehaviour
             slots.Add(inventorySlotsParent.transform.GetChild(i).gameObject.GetComponent<InventorySlot>());
         }
 
-            
+        
     }
 
 

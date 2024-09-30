@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: Hammer
   m_EditorClassIdentifier: 
   itemID: 10000
-  overlap: 1
+  overlap: 0
   interactive: 1
-  consumable: 1
-  itemType: 0
+  consumable: 0
+  itemType: -1
   itemImage: {fileID: 21300000, guid: 7a3dab150cc395649956a5a9164fb49b, type: 3}
+  growthTime: 0
+  sprites: []
