@@ -17,8 +17,8 @@ public class MouseCursor : MonoBehaviour
     private void Awake()
     {
          
-        mouseRender = GetComponent<SpriteRenderer>();
-        mouseRender.sprite = cursorImage;
+        //mouseRender = GetComponent<SpriteRenderer>();
+        //mouseRender.sprite = cursorImage;
     }
  
 

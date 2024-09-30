@@ -277,7 +277,7 @@ public class PlayerController : MonoBehaviour
                     {
                         if(player.cropSeed.OnMouse && Input.GetMouseButtonDown(0))
                         {
-                            //농작물 수확 후 인벤토리 추가 
+                            //수확한 농작물 아이템을 넘김
                             player.inventory.PickUpItemp(player.cropSeed.Harvest());
 
                             player.ChangeState(State.Idle);

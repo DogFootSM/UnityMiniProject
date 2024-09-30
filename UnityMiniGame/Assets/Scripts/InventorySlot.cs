@@ -8,18 +8,21 @@ public class InventorySlot : MonoBehaviour
 {
     //현재 아이템의 이미지
     [SerializeField] private Image itemImage;
+    public Image ItemImage { get { return itemImage; } set { itemImage = value; } }
 
     //현재 아이템의 개수 텍스트
     [SerializeField] private TextMeshProUGUI itemCountText;
- 
+    public TextMeshProUGUI ItemCountText { get { return itemCountText; } set { itemCountText = value; } }
+
+    [SerializeField] private Button itemRemoveButton;
 
     //아이템 인스턴스 변수
     private Item _item;
-    public Item Item { get { return _item; } }
+    public Item Item { get { return _item; } set { _item = value; } }
 
     //현재 아이템의 개수
     private int itemCount;
-
+    public int ItemCount { get { return itemCount; } set { itemCount = value; } }
 
     private void Update()
     {
@@ -27,16 +30,14 @@ public class InventorySlot : MonoBehaviour
         if(_item == null)
         {
             itemCountText.text = "";
+            itemRemoveButton.gameObject.SetActive(false);
         }
+        else
+        {
+            itemRemoveButton.gameObject.SetActive(true);
+        }
+    }
  
-
-
-    }
-
-    public InventorySlot GetSlotItem()
-    {
-        return this;
-    }
 
     //아이템을 새로 추가
     public void AddItem(Item item, int count =1)
@@ -74,7 +75,7 @@ public class InventorySlot : MonoBehaviour
         itemCount = 0;
         itemImage.sprite = null;
         itemCountText.text = "";
-
+        itemRemoveButton.gameObject.SetActive(false);
     }
 
 
