@@ -9,26 +9,44 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
 
-    [SerializeField] private Slider energyBar; 
+    [SerializeField] private Slider energyBar;
 
-
+    [Header("타이틀 뮤트 이미지")]
+    [SerializeField] private Sprite mute;
+    [SerializeField] private Sprite unMute;
+    [SerializeField] private Image muteImage;
+ 
+ 
     private void Awake()
-    {
-
-        if(Instance == null)
+    { 
+        if (Instance == null)
         {
-            Instance = this;
-            //추후에 스타 화면에서 생성해서 DonDestroy하게?
+            Instance = this; 
         }
         else
         {
-            Destroy(Instance);
+            Destroy(gameObject);
         }
+
     }
+
  
+
     public void EnergyBarUpdate(float value)
     {
         energyBar.value = value * 0.01f; 
+    }
+
+    public void MuteImage()
+    {
+        if (SoundManager.Instance.MuteState)
+        {
+            muteImage.sprite = mute;
+        }
+        else
+        {
+            muteImage.sprite = unMute;
+        }
     }
  
 

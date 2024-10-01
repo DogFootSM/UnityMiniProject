@@ -79,7 +79,7 @@ public class Inventory : InventoryController
         //아이템 정보창 Offset
         Vector3 indicatorOffset = new Vector3(80, 100);
 
-        if (Inventory.isInventoryActive)
+        if (isInventoryActive)
         {
             if (results.Count > 0)
             {
@@ -156,9 +156,11 @@ public class Inventory : InventoryController
 
             bSlot.AddItem(aSlot.Item, aSlot.ItemCount);
             aSlot.ClearSlot();
-
-
+             
         }
+
+        itemSelectBox.transform.position = bSlot.transform.position;
+
     }
 
 
@@ -182,6 +184,11 @@ public class Inventory : InventoryController
                         itemIconImage.sprite = slot1.Item.ItemImage;
                         itemIconImage.color = new Color(255f, 255f, 255f, 0.6f);
                         isSelecting = true;
+                    }
+
+                    else if(slot1.Item == null && itemSelectBox.activeSelf)
+                    {
+                        itemSelectBox.SetActive(false);
                     }
 
                     for (int i = 0; i < slots.Count; i++)
@@ -228,7 +235,6 @@ public class Inventory : InventoryController
                 else
                 {
                     itemIconImage.gameObject.SetActive(false);
-                    itemSelectBox.SetActive(false);
                     itemIconImage.sprite = null;
                 }
             }
