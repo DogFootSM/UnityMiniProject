@@ -25,7 +25,10 @@ public class UIManager : MonoBehaviour
 
     }
 
- 
+    public void HPBarUpdate(float value)
+    {
+        hpBar.value = value * 0.01f;
+    }
 
     public void EnergyBarUpdate(float value)
     {

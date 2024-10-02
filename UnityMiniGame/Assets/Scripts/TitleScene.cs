@@ -9,9 +9,15 @@ public class TitleScene : MonoBehaviour
     [SerializeField] private Sprite mute;
     [SerializeField] private Sprite unMute;
     [SerializeField] private Image muteImage;
-
-    [SerializeField] private AudioSource titleBGM;
+     
     private bool muteState;
+
+    
+
+    public void Awake()
+    {
+        SoundManager.Instance.ChangeBGM(SoundManager.Instance.bgmList[0]);
+    }
 
     public void MuteImage()
     {
@@ -29,15 +35,16 @@ public class TitleScene : MonoBehaviour
     public void Mute()
     {
 
-        if (titleBGM.mute)
+        if (SoundManager.Instance.BGMMute)
         {
             muteState = false;
-            titleBGM.mute = muteState;
+            SoundManager.Instance.BGMOff();
+
         }
         else
         {
             muteState = true;
-            titleBGM.mute = muteState;
+            SoundManager.Instance.BGMOn();
         }
 
         MuteImage();

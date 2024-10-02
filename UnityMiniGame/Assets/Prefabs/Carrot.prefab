@@ -1,5 +1,81 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3214897485467411131
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1814819528572576294}
+  - component: {fileID: 3800629961623744966}
+  - component: {fileID: 2613542617169243669}
+  m_Layer: 7
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1814819528572576294
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3214897485467411131}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5751698505815882007}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0.41, y: 0.17769909}
+  m_SizeDelta: {x: 3.0591, y: 1.8154}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &3800629961623744966
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3214897485467411131}
+  m_CullTransparentMesh: 1
+--- !u!114 &2613542617169243669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3214897485467411131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 110982767, guid: c64410c6b3bfec04faa9fdb366b0b95a, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &5751698505815882004
 GameObject:
   m_ObjectHideFlags: 0
@@ -31,6 +107,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1814819528572576294}
   - {fileID: 5751698506953965330}
   m_Father: {fileID: 5751698505947937414}
   m_RootOrder: 0
@@ -201,7 +278,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd17f5d4f4fd4ff45946b8954e30051f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clip: {fileID: 8300000, guid: 52c7674b1c484924698c3a8745ca7044, type: 3}
   harvestText: {fileID: 5751698506953965341}
+  harvestImage: {fileID: 2613542617169243669}
   _item: {fileID: 11400000, guid: 5697aeff92b2aec4bb54036697a44248, type: 2}
 --- !u!70 &2054922053
 CapsuleCollider2D:
@@ -250,11 +329,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5751698505815882007}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.33833674}
   m_AnchorMax: {x: 1, y: 0.6751353}
-  m_AnchoredPosition: {x: -0.0010634661, y: -0.020410597}
+  m_AnchoredPosition: {x: 0.45, y: 0.26}
   m_SizeDelta: {x: 0.5018332, y: 0.88917756}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5751698506953965340
@@ -294,8 +373,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4289462527
-  m_fontColor: {r: 1, g: 0, b: 0.67534256, a: 1}
+    rgba: 4281011424
+  m_fontColor: {r: 0.8784314, g: 0.047058824, b: 0.16862746, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -312,8 +391,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.85
-  m_fontSizeBase: 0.85
+  m_fontSize: 0.6
+  m_fontSizeBase: 0.6
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

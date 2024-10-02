@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Texture2D cursorTexture;
     [SerializeField] private FadeInOut fade;
 
+    [SerializeField] private Image option;
 
     public Vector2 mousePos;
 
@@ -53,6 +54,7 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         Mouse();
+        SetGameOption();
 
     }
 
@@ -80,6 +82,8 @@ public class GameManager : MonoBehaviour
                 sync.allowSceneActivation = true;
 
                 fade.FadeIn();
+
+                SoundManager.Instance.ChangeBGM(SoundManager.Instance.bgmList[1]);
             }
 
             yield return null;
@@ -99,5 +103,24 @@ public class GameManager : MonoBehaviour
 #endif
 
     }
+
+    public void SetGameOption()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!option.gameObject.activeSelf)
+            {
+                option.gameObject.SetActive(true);
+            }
+            else
+            {
+                option.gameObject.SetActive(false);
+            }
+            
+        }
+
+    }
+
+
      
 }

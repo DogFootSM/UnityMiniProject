@@ -8,8 +8,11 @@ using UnityEngine.Events;
 
 public class Crop : MonoBehaviour
 {
-     
+
+    [SerializeField] private AudioClip clip;
+
     [SerializeField] private TextMeshProUGUI harvestText;
+    [SerializeField] private Image harvestImage;
     public TextMeshProUGUI HarvestText { get { return harvestText; } }
 
     [Header("아이템 데이터")]
@@ -46,7 +49,7 @@ public class Crop : MonoBehaviour
     //마우스 오버 상태
     private bool onMouse;
     public bool OnMouse { get { return onMouse; } set { onMouse = value; } }
-
+    
     //마우스 위치
     private Vector2 mousePos; 
 
@@ -74,6 +77,8 @@ public class Crop : MonoBehaviour
     private void OnDisable()
     {
         //수확 효과음 재생
+        SoundManager.Instance.PlaySFX(clip);
+
     }
 
     public void MouseOnCrop()
@@ -81,7 +86,7 @@ public class Crop : MonoBehaviour
         if (isHarvestable)
         {
 
-            RaycastHit2D hit = Physics2D.Raycast(GameManager.Instance.mousePos, Vector2.zero);
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 
             if (hit.collider != null)
             {
@@ -93,20 +98,23 @@ public class Crop : MonoBehaviour
                     //내 자신과 비교해서 같으면 수확 가능 안내 활성화
                     if (instance == this)
                     {
-                        harvestText.text = name + " 수확 가능";
+                        harvestText.text = name + " 수확";
                         harvestText.gameObject.SetActive(true);
+                        harvestImage.gameObject.SetActive(true);
                         onMouse = true;
                     }
                 }
                 else
                 {
                     harvestText.gameObject.SetActive(false);
+                    harvestImage.gameObject.SetActive(false);
                     onMouse = false;
                 }
             }
             else
             {
                 harvestText.gameObject.SetActive(false);
+                harvestImage.gameObject.SetActive(false);
                 onMouse = false;
             }
         }

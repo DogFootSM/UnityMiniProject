@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private SpriteRenderer hairRender;
     [SerializeField] private SpriteRenderer toolRender;
 
+    [SerializeField] private AudioClip attackClip;
+    [SerializeField] private AudioClip waterClip;
 
     //보유중인 작물 씨앗
     [SerializeField] private Crop cropSeed;
@@ -84,7 +86,7 @@ public class PlayerController : MonoBehaviour
     public float Energy { get { return energy; } set { energy = value; } }
 
     //플레이어 체력
-    private int hp = 10000;
+    private int hp = 100;
     public int HP { get { return hp; } set { hp = value; } }
 
 
@@ -113,6 +115,9 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         playerStates[(int)curState].Enter();
+
+        UIManager.Instance.HPBarUpdate(hp);
+        UIManager.Instance.EnergyBarUpdate(energy);
     }
 
 
@@ -478,7 +483,7 @@ public class PlayerController : MonoBehaviour
             hurtRoutine = player.StartCoroutine(player.HurtCoroutine());
  
             player.hp -= 30; 
-
+            UIManager.Instance.HPBarUpdate(player.hp);
         }
 
         public override void Update()
@@ -545,6 +550,7 @@ public class PlayerController : MonoBehaviour
     {
 
         //공격 로직 진행
+        SoundManager.Instance.PlaySFX(attackClip);
         yield return attackWait;
 
         //Idle 전환
@@ -559,14 +565,12 @@ public class PlayerController : MonoBehaviour
         //HP가 1 이상일 때에는 idle
         ChangeState(State.Idle);
 
-        //HP가 1 이하일 때에는 Death
-        //ChangeState(State.Death);
+        //HP가 1 이하일 때에는 Death 
     }
 
     private IEnumerator WateringCoroutine()
     {
-        //물 주기 기능 동작 
-        Debug.Log("물을 줬습니다.");
+        SoundManager.Instance.PlaySFX(waterClip);
         cropSeed.Grow();
         yield return waterWait;
 

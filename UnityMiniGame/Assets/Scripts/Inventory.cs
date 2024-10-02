@@ -259,6 +259,12 @@ public class Inventory : InventoryController
     {
         removeSlot.ClearSlot();
         removeAlert.SetActive(false);
+
+        if (itemSelectBox.activeSelf)
+        {
+            itemSelectBox.SetActive(false);
+        }
+
     }
 
     public void OpenInventory()

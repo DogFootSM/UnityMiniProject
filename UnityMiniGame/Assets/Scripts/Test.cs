@@ -11,17 +11,17 @@ public class Test : MonoBehaviour
 
     private void OnGUI()
     {
-        if(GUI.Button(new Rect(20, 20, 300, 40),"ºñÆ® È¹µæ"))
+        if(GUI.Button(new Rect(20, 20, 100, 40),"ºñÆ® È¹µæ"))
         {
             inventory.PickUpItemp(Beet);
         }
 
-        if(GUI.Button(new Rect(400,20, 300, 40), "´ç±Ù È¹µæ"))
+        if(GUI.Button(new Rect(400,20, 100, 40), "´ç±Ù È¹µæ"))
         {
             inventory.PickUpItemp(Carrot);
         }
 
-        if (GUI.Button(new Rect(200, 50, 300, 40), "È£¹Ú È¹µæ"))
+        if (GUI.Button(new Rect(200, 50, 100, 40), "È£¹Ú È¹µæ"))
         {
             inventory.PickUpItemp(Pumpkin);
         }
