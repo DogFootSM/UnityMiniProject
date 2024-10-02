@@ -84,7 +84,7 @@ public class PlayerController : MonoBehaviour
     public float Energy { get { return energy; } set { energy = value; } }
 
     //플레이어 체력
-    private int hp;
+    private int hp = 10000;
     public int HP { get { return hp; } set { hp = value; } }
 
 
@@ -187,9 +187,18 @@ public class PlayerController : MonoBehaviour
     //몬스터와 충돌 처리
     private void OnCollisionEnter2D(Collision2D collision)
     {
+ 
         if (collision.gameObject.tag == "Monster")
         {
             underAttack = true;
+
+            //충돌체 위치 확인
+            ContactPoint2D contact =collision.contacts[0];
+            Vector2 normal = contact.normal;
+  
+            //충돌 시 넉백 효과
+            rb.AddForce(new Vector2(normal.x, normal.y) * 10f, ForceMode2D.Impulse);
+ 
         }
     }
 
@@ -198,6 +207,7 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.tag == "Monster")
         {
             underAttack = false;
+            rb.velocity = Vector2.zero;
         }
 
     }
@@ -252,8 +262,7 @@ public class PlayerController : MonoBehaviour
             {
                 player.ChangeState(State.Hurt);
             }
-
-
+ 
             if (player.hit.collider != null)
             {
                 Debug.Log(player.hit.collider.gameObject.tag);
@@ -361,8 +370,7 @@ public class PlayerController : MonoBehaviour
             {
                 player.ChangeState(State.Hurt);
             }
-
-
+ 
         }
 
         public override void FixedUpdate()
@@ -430,12 +438,8 @@ public class PlayerController : MonoBehaviour
 
             //오브젝트(나무, 돌 등), Monster 레이어 확인 후 레이어에 맞게 공격, 수확 진행 
             player.animator.Play(player.attackHash);
-
-
-
-
-
-
+            player.energy -= 10;
+             
             //공격 타이머 코루틴
             attackRoutine = player.StartCoroutine(player.AttackCoroutine());
 
@@ -447,7 +451,7 @@ public class PlayerController : MonoBehaviour
             {
                 player.ChangeState(State.Hurt);
             }
-
+ 
         }
 
         public override void Exit()
@@ -472,9 +476,22 @@ public class PlayerController : MonoBehaviour
         {
             player.animator.Play(player.hurtHash);
             hurtRoutine = player.StartCoroutine(player.HurtCoroutine());
-            //HP 감소 로직
+ 
+            player.hp -= 30; 
 
         }
+
+        public override void Update()
+        {
+            if (player.hp < 1)
+            {
+                player.ChangeState(State.Death);
+            }
+
+
+
+        }
+
 
         public override void Exit()
         {

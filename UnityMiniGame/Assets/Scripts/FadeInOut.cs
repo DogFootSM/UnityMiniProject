@@ -8,19 +8,36 @@ using UnityEngine.UI;
 public class FadeInOut : MonoBehaviour
 {
     [SerializeField] private GameObject fadePanel;
- 
+
+
+    public Coroutine fadeIn;
+    public Coroutine fadeOut;
     private Action OnAfterFade;
+
+    private bool isFadeIn;
+    public bool IsFadeIn { get { return isFadeIn; } }
+
 
     public void FadeIn()
     {
-        StartCoroutine(FadeInCoroutine());
+        if(!isFadeIn && fadeOut != null)
+        { 
+            StopCoroutine(fadeOut);
+        }
+
+        fadeIn = StartCoroutine(FadeInCoroutine());
+ 
+        if (isFadeIn && fadeIn != null)
+        { 
+            StopCoroutine(fadeIn);
+        }
     }
  
     public void FadeOut()
     {
         fadePanel.SetActive(true);
 
-        StartCoroutine(FadeOutCoroutine()); 
+        fadeOut = StartCoroutine(FadeOutCoroutine()); 
     }
 
     public IEnumerator FadeInCoroutine()
@@ -37,8 +54,8 @@ public class FadeInOut : MonoBehaviour
             yield return null;
         }
 
-        fadePanel.SetActive(false);
-
+        fadePanel.SetActive(false); 
+        isFadeIn = true;
         yield break;
     }
      
@@ -55,8 +72,9 @@ public class FadeInOut : MonoBehaviour
 
             yield return null;
 
-        }
-        
+        } 
+
+        isFadeIn = false;
         OnAfterFade?.Invoke();
         yield break;
     }

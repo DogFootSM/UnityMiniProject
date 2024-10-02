@@ -10,13 +10,8 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance;
 
     [SerializeField] private Slider energyBar;
+    [SerializeField] private Slider hpBar;
 
-    [Header("타이틀 뮤트 이미지")]
-    [SerializeField] private Sprite mute;
-    [SerializeField] private Sprite unMute;
-    [SerializeField] private Image muteImage;
- 
- 
     private void Awake()
     { 
         if (Instance == null)
@@ -36,18 +31,7 @@ public class UIManager : MonoBehaviour
     {
         energyBar.value = value * 0.01f; 
     }
-
-    public void MuteImage()
-    {
-        if (SoundManager.Instance.MuteState)
-        {
-            muteImage.sprite = mute;
-        }
-        else
-        {
-            muteImage.sprite = unMute;
-        }
-    }
+ 
  
 
 }

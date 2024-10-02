@@ -7,14 +7,8 @@ public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance { get; private set; }
 
-    [SerializeField] private AudioMixer audioMixer;
-    [SerializeField] private AudioSource titleBGM;
-
-
-     
-    private bool muteState;
-    public bool MuteState { get { return muteState; } }
-
+    [SerializeField] private AudioMixer audioMixer; 
+  
     private void Awake()
     {
         if(Instance == null)
@@ -26,22 +20,7 @@ public class SoundManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
-    public void Mute()
-    {
-  
-        if (titleBGM.mute)
-        {
-            muteState = false;
-            titleBGM.mute = muteState; 
-        }
-        else
-        {
-            muteState = true;
-            titleBGM.mute = muteState; 
-        }
-        UIManager.Instance.MuteImage();
-    }
+ 
 
     
 
