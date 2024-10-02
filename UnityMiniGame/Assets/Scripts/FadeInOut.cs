@@ -8,8 +8,7 @@ using UnityEngine.UI;
 public class FadeInOut : MonoBehaviour
 {
     [SerializeField] private GameObject fadePanel;
-    public bool isFadeIn;
-
+ 
     private Action OnAfterFade;
 
     public void FadeIn()
