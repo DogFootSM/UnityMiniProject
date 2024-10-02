@@ -9313,6 +9313,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   curState: 0
   cursorTexture: {fileID: 2800000, guid: 2455162bc78734d41b510a302a814f54, type: 3}
+  fade: {fileID: 1625844273}
   mousePos: {x: 0, y: 0}
 --- !u!4 &1128100111
 Transform:
@@ -14273,6 +14274,7 @@ GameObject:
   - component: {fileID: 1625844271}
   - component: {fileID: 1625844270}
   - component: {fileID: 1625844269}
+  - component: {fileID: 1625844273}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -14371,6 +14373,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1625844273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1625844268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7027b87ac1cf9184a85059ae48aa5971, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadePanel: {fileID: 0}
+  isFadeIn: 0
 --- !u!1 &1626358325
 GameObject:
   m_ObjectHideFlags: 0

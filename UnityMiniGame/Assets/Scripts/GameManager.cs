@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,16 +18,16 @@ public class GameManager : MonoBehaviour
 
     [Header("커서 이미지")]
     [SerializeField] private Texture2D cursorTexture;
-
+    [SerializeField] private FadeInOut fade;
 
 
     public Vector2 mousePos;
-    private Camera cam;
 
+    private Action OnGameStart;
 
     private void Awake()
     {
-        cam = Camera.main;
+ 
         //마우스 커서 설정
         Cursor.SetCursor(cursorTexture, new Vector2(0, 0), CursorMode.ForceSoftware);
 
@@ -39,9 +41,13 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        
+        OnGameStart = GameStart;
     }
- 
+
+    private void Start()
+    {
+        fade.SceneChange(OnGameStart);
+    }
 
     private void Update()
     {
@@ -53,10 +59,37 @@ public class GameManager : MonoBehaviour
 
     public void Mouse()
     {
-        mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-
+        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        
     }
      
+    //FadeOut이 완료된 후 Main 씬 이동 진행
+    public void GameStart()
+    {
+
+        StartCoroutine(GameStartCo());
+    }
+
+    public IEnumerator GameStartCo()
+    {
+        AsyncOperation sync = SceneManager.LoadSceneAsync(1);
+        sync.allowSceneActivation = false;
+
+        while (!sync.isDone)
+        {
+            if(sync.progress >= 0.9f)
+            {
+                sync.allowSceneActivation = true;
+
+                fade.FadeIn();
+            }
+             
+            yield return null;
+        }
+
+
+    }
+
 
     //게임 시작 버튼 클릭 > 로딩 진행 후 씬 전환
     //옵션 버튼 >
